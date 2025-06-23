@@ -1,9 +1,7 @@
-
 import streamlit as st
 from PyPDF2 import PdfMerger
 import io
 import time
-import re
 import natsort
 
 def sort_files(files, sort_option):
@@ -66,176 +64,113 @@ def merge_pdfs(pdf_files):
         st.error(f"Erro ao unir PDFs: {str(e)}")
         return None
 
-st.set_page_config(layout="centered", page_title="Unir PDFs - Windows 98 Style")
+st.set_page_config(layout="centered", page_title="WE ❤️ PDFs")
 
 st.markdown("""
 <style>
-    @font-face {
-        font-family: 'W98';
-        src: url('https://unpkg.com/xp.css/dist/fonts/MS-Sans-Serif.woff2') format('woff2');
-    }
-    body {
-        font-family: 'W98', sans-serif;
-        background-color: #008080; /* Teal color of Windows 98 */
-        color: #000000;
-    }
     .stApp {
-        background-color: #C0C0C0; /* Grey background for the app */
-        border: 2px solid white;
-        border-right: 2px solid black;
-        border-bottom: 2px solid black;
-        padding: 10px;
-        box-shadow: 5px 5px 0px black;
+        background-color: #1a1a1a;
+        color: #ffffff;
     }
-    .stButton>button {
-        background-color: #C0C0C0;
-        border: 2px solid white;
-        border-right: 2px solid black;
-        border-bottom: 2px solid black;
-        padding: 5px 10px;
-        font-family: 'W98', sans-serif;
-        font-size: 16px;
+    
+    .main {
+        background-color: #1a1a1a;
+        padding: 2rem;
     }
-    .stButton>button:active {
-        background-color: #D0D0D0;
-        border: 2px solid black;
-        border-right: 2px solid white;
-        border-bottom: 2px solid white;
-    }
-    .stFileUploader>div>div>button {
-        background-color: #C0C0C0;
-        border: 2px solid white;
-        border-right: 2px solid black;
-        border-bottom: 2px solid black;
-        padding: 5px 10px;
-        font-family: 'W98', sans-serif;
-        font-size: 16px;
-    }
-    .stFileUploader>div>div>button:active {
-        background-color: #D0D0D0;
-        border: 2px solid black;
-        border-right: 2px solid white;
-        border-bottom: 2px solid white;
-    }
-    .stFileUploader>div>div>div>div>label {
-        font-family: 'W98', sans-serif;
-        font-size: 16px;
-    }
+    
     h1 {
-        color: #000000;
-        font-family: 'W98', sans-serif;
-        text-shadow: 1px 1px #FFFFFF;
-    }
-    .css-1d391kg {
-        background-color: #C0C0C0;
-        border: 2px solid white;
-        border-right: 2px solid black;
-        border-bottom: 2px solid black;
-        padding: 10px;
-        box-shadow: 5px 5px 0px black;
+        color: #ff6b6b;
+        text-align: center;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
     }
     
-    /* Efeito especial do unicórnio */
-    .unicorn-surprise {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 9999;
-        display: none;
-        animation: unicornJump 2s ease-in-out;
-        font-size: 100px;
-        text-shadow: 0 0 20px #ff69b4;
-    }
-    
-    .rainbow-bg {
-        position: fixed;
-        top: 0;
-        left: 0;
+    .stButton > button {
+        background-color: #4ecdc4;
+        color: #1a1a1a;
+        border: none;
+        border-radius: 5px;
+        padding: 0.75rem 1.5rem;
+        font-weight: bold;
+        font-size: 1rem;
         width: 100%;
-        height: 100%;
-        z-index: 9998;
-        display: none;
-        background: linear-gradient(45deg, 
-            #ff0000, #ff7f00, #ffff00, #00ff00, 
-            #0000ff, #4b0082, #9400d3, #ff0000);
-        background-size: 400% 400%;
-        animation: rainbowMove 1s ease-in-out;
-        opacity: 0.8;
     }
     
-    @keyframes unicornJump {
-        0% { transform: translate(-50%, 200%); }
-        50% { transform: translate(-50%, -50%) scale(1.5); }
-        100% { transform: translate(-50%, -200%); }
+    .stButton > button:hover {
+        background-color: #45b7aa;
     }
     
-    @keyframes rainbowMove {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+    .stFileUploader {
+        background-color: #2d2d2d;
+        border: 2px dashed #4ecdc4;
+        border-radius: 10px;
+        padding: 2rem;
+        text-align: center;
     }
     
-    .shake {
-        animation: shake 0.5s;
+    .stSelectbox > div > div {
+        background-color: #2d2d2d;
+        color: #ffffff;
+        border: 1px solid #4ecdc4;
     }
     
-    @keyframes shake {
-        0% { transform: translate(1px, 1px) rotate(0deg); }
-        10% { transform: translate(-1px, -2px) rotate(-1deg); }
-        20% { transform: translate(-3px, 0px) rotate(1deg); }
-        30% { transform: translate(3px, 2px) rotate(0deg); }
-        40% { transform: translate(1px, -1px) rotate(1deg); }
-        50% { transform: translate(-1px, 2px) rotate(-1deg); }
-        60% { transform: translate(-3px, 1px) rotate(0deg); }
-        70% { transform: translate(3px, 1px) rotate(-1deg); }
-        80% { transform: translate(-1px, -1px) rotate(1deg); }
-        90% { transform: translate(1px, 2px) rotate(0deg); }
-        100% { transform: translate(1px, -2px) rotate(-1deg); }
+    .stExpander {
+        background-color: #2d2d2d;
+        border: 1px solid #4ecdc4;
+        border-radius: 5px;
+    }
+    
+    .stSuccess {
+        background-color: #2d4a2d;
+        color: #90ee90;
+        border: 1px solid #4caf50;
+    }
+    
+    .stInfo {
+        background-color: #2d2d4a;
+        color: #87ceeb;
+        border: 1px solid #2196f3;
+    }
+    
+    .stError {
+        background-color: #4a2d2d;
+        color: #ffb3b3;
+        border: 1px solid #f44336;
+    }
+    
+    .stProgress > div > div {
+        background-color: #4ecdc4;
+    }
+    
+    .stDownloadButton > button {
+        background-color: #ff6b6b;
+        color: #ffffff;
+        border: none;
+        border-radius: 5px;
+        padding: 0.75rem 1.5rem;
+        font-weight: bold;
+        font-size: 1rem;
+        width: 100%;
+    }
+    
+    .stDownloadButton > button:hover {
+        background-color: #ff5252;
+    }
+    
+    hr {
+        border-color: #4ecdc4;
+    }
+    
+    .stMarkdown {
+        color: #ffffff;
     }
 </style>
-
-<div class="rainbow-bg" id="rainbowBg"></div>
-<div class="unicorn-surprise" id="unicornSurprise">🦄🌈</div>
-
-<script>
-function triggerUnicornSurprise() {
-    const rainbow = document.getElementById('rainbowBg');
-    const unicorn = document.getElementById('unicornSurprise');
-    const app = document.querySelector('.stApp');
-    
-    // Mostrar efeitos
-    rainbow.style.display = 'block';
-    unicorn.style.display = 'block';
-    app.classList.add('shake');
-    
-    // Tocar som de susto (se possível)
-    try {
-        const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBSuBzvLZiTYIG2m98OScTgwOUarm7blmGgU7k9n1unEiBC13yO/eizEIHWq+8+OWT');
-        audio.play();
-    } catch(e) {}
-    
-    // Remover efeitos após 2 segundos
-    setTimeout(() => {
-        rainbow.style.display = 'none';
-        unicorn.style.display = 'none';
-        app.classList.remove('shake');
-    }, 2000);
-}
-
-// Detectar clique no botão de download
-document.addEventListener('click', function(e) {
-    if (e.target.textContent && e.target.textContent.includes('Baixar PDF')) {
-        setTimeout(triggerUnicornSurprise, 100);
-    }
-});
-</script>
 """, unsafe_allow_html=True)
 
-st.title("🦄 Unir PDFs - Estilo Windows 98 🌈")
+st.title("WE ❤️ PDFs")
 
 st.write("Faça o upload de seus arquivos PDF para uni-los em um único documento.")
-st.write("⚡ Suporta até 100 PDFs com máxima qualidade!")
+st.write("Suporta até 100 PDFs com máxima qualidade!")
 
 uploaded_files = st.file_uploader(
     "Escolha os arquivos PDF", 
@@ -248,7 +183,7 @@ if uploaded_files:
     st.success(f"📁 {len(uploaded_files)} arquivo(s) carregado(s)")
     
     # Opções de ordenação
-    st.subheader("🔄 Ordenação dos arquivos")
+    st.subheader("Ordenação dos arquivos")
     sort_option = st.selectbox(
         "Como deseja ordenar os PDFs antes de uni-los?",
         ["Ordem de seleção", "Alfabética (A-Z)", "Alfabética (Z-A)", "Numérica"],
@@ -263,32 +198,26 @@ if uploaded_files:
         for i, file in enumerate(sorted_files, 1):
             st.write(f"{i}. {file.name} ({file.size} bytes)")
     
-    if st.button("🔗 Unir PDFs", type="primary"):
+    if st.button("Unir PDFs", type="primary"):
         merged_pdf = merge_pdfs(sorted_files)
         
         if merged_pdf:
-            st.balloons()
-            
             # Calcular tamanho do arquivo final
             file_size = len(merged_pdf.getvalue())
             file_size_mb = file_size / (1024 * 1024)
             
-            st.success(f"🎉 PDFs unidos com sucesso! Tamanho final: {file_size_mb:.2f} MB")
+            st.success(f"PDFs unidos com sucesso! Tamanho final: {file_size_mb:.2f} MB")
             
-            # Botão de download com efeito especial
+            # Botão de download
             st.download_button(
-                label="📥 Baixar PDF Unido",
+                label="Baixar PDF Unido",
                 data=merged_pdf,
                 file_name="pdfs_unidos.pdf",
-                mime="application/pdf",
-                help="Clique para baixar o PDF unido (prepare-se para uma surpresa! 🦄)"
+                mime="application/pdf"
             )
 else:
-    st.info("👆 Selecione os arquivos PDF acima para começar")
+    st.info("Selecione os arquivos PDF acima para começar")
 
 # Rodapé
 st.markdown("---")
-st.markdown("💡 **Dica:** Esta aplicação mantém a qualidade original dos PDFs durante a união!")
-st.markdown("🎨 **Estilo:** Windows 98 Retro com surpresas especiais!")
-
-
+st.markdown("**Dica:** Esta aplicação mantém a qualidade original dos PDFs durante a união!")
