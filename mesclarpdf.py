@@ -215,6 +215,10 @@ if uploaded_files:
                 file_name="pdfs_unidos.pdf",
                 mime="application/pdf"
             )
+            
+            # Botão para limpar e começar novamente
+            if st.button("🔄 Limpar e Começar Novamente", key="clear_button"):
+                st.rerun()
 else:
     st.info("Selecione os arquivos PDF acima para começar")
 
